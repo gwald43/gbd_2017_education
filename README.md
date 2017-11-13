@@ -1,2 +1,3 @@
-# gbd_2017_education
-Collection of code for estimating GBD education covariate, education distributions, &amp; as a risk factor
+# Education in GBD 2017
+
+This is a collection of code for estimating the GBD education covariate, education distributions, &amp; as a risk factor

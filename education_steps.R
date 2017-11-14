@@ -9,12 +9,11 @@ library(ggplot2)
 ###########################################
 #
 # Code is structured as follows:
-#   1. Options and desired outputs
-#   2. Directories and datasets
-#   3. Version control options
-#   4. Analytical steps
-#   5. Database formatting
-#   6. Graphing tools
+#   1. General options
+#   2. Version control and directory options
+#   3. Analytical steps
+#   4. Database formatting
+#   5. Graphing tools
 #
 ###########################################
 
@@ -22,42 +21,60 @@ library(ggplot2)
 # 1. Options
 #############
 
-team        <- "GBD"              #Can be either "GBD", "Forecasting", or "Risk Factors"
-debug       <- T                  #If True, then code will only be run for a single location, year, age, sex
-steps       <- c(1, 2, 3, etc)    #Which analytical steps to run. If blank, all steps are run.
-new_version <- T                  #Create a new version? If not specified, version below must be specified.
+team          <- "GBD"              #Can be either "GBD", "Forecasting", or "Risk Factors"
+debug         <- T                  #If True, then code will only be run for a single location, year, age, sex
+new_version   <- F                  #Create a new version? If not specified, version below must be specified.
+steps         <- c(1, 2, 3, etc)    #Which analytical steps to run. If blank, all steps are run.
 
-version <- NA 
+if (new_version == F){
+  version     <- 1                  
+}
 
-###############################
-# 2. Version control & options
-###############################
+#Initial notes detailing version's purpose
+version_notes <- "Test run for new education code"
 
+#########################################
+# 2. Version control & directory options
+#########################################
+
+main_dir    <- "/snfs1/WORK/01_covariates/02_inputs/education/update_2018/education_results/" 
 version_dir <- paste0(main_dir, "/version_history/", team, "/")
 
 # If it's a new version of results, create the new version. Otherwise, overwrite a set of pre-existing results. User must manually input the version
 if (new_version == T){
   version <- list.files(version_dir) %>% max %>% +1
-}else{
-  version <- ""
 }
 
-main_dir    <- "/snfs1/WORK/01_covariates/02_inputs/education/" 
-input_dir   <- paste0(main_dir, team, "/", version, "/inputs/")           
-output_dir  <- paste0(main_dir, team, "/", version, "/outputs/")
-figure_dir  <- paste0(main_dir, team, "/", version, "/figures/")
-
-##############################
-# 3. Directories and datasets 
-##############################
-
+sub_dir     <- paste0(main_dir, team, "/v", version)
+input_dir   <- paste0(sub_dir, "/inputs/")           
+output_dir  <- paste0(sub_dir, "/outputs/")
+figure_dir  <- paste0(sub_dir, "/figures/")
 
 date    <- Sys.time() %>% as.character %>% sub(" .*$", "", .) %>% gsub("-", "_", .)
 
+#If directories don't already exist, make them
+for (filepath in list(version_dir, input_dir, output_dir, figure_dir)){
+  dir.create(filepath, recursive = T, showWarnings = F)
+}
+
+#Write initial log, with date stamp and version notes
+log      <- paste0("Version: ", team, " v", version, "\n\n", "Date: ", date, "\n\n", "Description: ", version_notes)
+log_file <- file(paste0(version_dir, "v", version, "_", date, ".txt"))
+cat(log, file = log_file)
+close(log_file)
+
+#############################
+# 3. Templates and datasets
+#############################
            
-
+######################
 # 4. Analytical steps
+######################
 
+#########################
 # 5. Database formatting
+#########################
 
+####################
 # 6. Graphing tools
+####################
